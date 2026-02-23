@@ -7,23 +7,12 @@ Une formation peut avoir plusieurs sessions.
 from __future__ import annotations
 
 from datetime import datetime
-from enum import Enum
 from typing import TYPE_CHECKING, Optional
 
 from sqlmodel import SQLModel, Field, Relationship
-
+from app.utils.enum import Level
 if TYPE_CHECKING:
     from app.models.session import Session
-
-
-class Level(str, Enum):
-    """Niveau de la formation : débutant, intermédiaire, avancé."""
-
-    BEGINNER = "beginner"
-    INTERMEDIATE = "intermediate"
-    ADVANCED = "advanced"
-
-
 class Formation(SQLModel, table=True):
     """
     Formation (parcours pédagogique).

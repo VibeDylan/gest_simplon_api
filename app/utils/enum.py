@@ -11,3 +11,11 @@ class Role(str, Enum):
     ADMIN = "admin"
     TRAINER = "trainer"
     LEARNER = "learner"
+
+
+class Level(str, Enum):
+    """Niveau de la formation : débutant, intermédiaire, avancé."""
+
+    BEGINNER = "beginner"
+    INTERMEDIATE = "intermediate"
+    ADVANCED = "advanced"
