@@ -1,8 +1,8 @@
 from datetime import datetime
 from enum import Enum
 from typing import Optional
+
 from sqlmodel import SQLModel, Field
-from datetime import utcnow
 
 
 class Role(str, Enum):
@@ -16,9 +16,9 @@ class User(SQLModel, table=True):
     email: str = Field(unique=True, index=True)
     first_name: str = Field(min_length=2)
     last_name: str = Field(min_length=2)
-    registered_at: datetime = Field(default_factory=utcnow)
+    registered_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(
-        default_factory=utcnow,
-        sa_column_kwargs={"onupdate": utcnow},
+        default_factory=datetime.utcnow,
+        sa_column_kwargs={"onupdate": datetime.utcnow},
     )
     role: Role = Field(default=Role.LEARNER)
