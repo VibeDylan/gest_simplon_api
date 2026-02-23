@@ -74,7 +74,6 @@ Postgres est exposé sur le port **5444** (hôte). Les données sont persistées
 ---
 
 ## Lancer le projet
-
 ```bash
 # Avec uvicorn (depuis la racine du projet)
 uvicorn main:app --reload
@@ -163,4 +162,3 @@ pytest --cov=app   # avec couverture
 
 Dépendances : `pytest`, `pytest-cov` (dans `requirements.txt`).
 
----
