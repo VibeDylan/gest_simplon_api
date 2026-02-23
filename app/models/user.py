@@ -1,20 +1,14 @@
 from __future__ import annotations
 
 from datetime import datetime
-from enum import Enum
 from typing import TYPE_CHECKING, Optional
 
 from sqlmodel import SQLModel, Field, Relationship
+from app.utils.role_class import Role
 
 if TYPE_CHECKING:
     from app.models.enrollment import Enrollment
     from app.models.session import Session
-
-
-class Role(str, Enum):
-    ADMIN = "admin"
-    TRAINER = "trainer"
-    LEARNER = "learner"
 
 
 class User(SQLModel, table=True):
