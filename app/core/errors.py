@@ -6,7 +6,6 @@ Le code HTTP est géré au niveau des handlers FastAPI (exception_handler).
 """
 from typing import Optional
 
-
 class AppError(Exception):
     """
     Exception de base pour toutes les erreurs métier.

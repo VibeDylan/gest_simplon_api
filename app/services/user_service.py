@@ -6,6 +6,7 @@ Orchestre le repository et applique les règles métier (unicité email, levée 
 from typing import List, Optional
 
 from pydantic import EmailStr
+from sqlalchemy.exc import IntegrityError
 
 from app.core.errors import EmailAlreadyUsed, UserNotFound
 from app.models.user import User
@@ -17,9 +18,18 @@ class UserService:
     def __init__(self, repo: UserRepository):
         self.repo = repo
 
+    def find_by_email(self, email: str) -> Optional[User]:
+        """
+        Cherche un utilisateur par email (finder interne, pas d'exception).
+
+        Utile dans create/update pour vérifier l'unicité sans lever 404.
+        """
+        email = email.lower().strip()
+        return self.repo.get_by_email(email)
+
     def create(self, data: UserCreate) -> User:
         email = data.email.lower().strip()
-        if self.repo.get_by_email(email):
+        if self.find_by_email(email):
             raise EmailAlreadyUsed()
         return self.repo.create(data)
 
@@ -30,8 +40,9 @@ class UserService:
         return user
 
     def get_by_email(self, email: EmailStr) -> User:
+        """Retourne l'utilisateur avec cet email ou lève UserNotFound."""
         email = email.lower().strip()
-        user = self.repo.get_by_email(email)
+        user = self.find_by_email(email)
         if not user:
             raise UserNotFound()
         return user
@@ -41,10 +52,22 @@ class UserService:
         return self.repo.list(offset=offset, limit=limit)
 
     def update(self, id: int, data: UserUpdate) -> User:
-        user = self.repo.update(id, data)
+        user = self.repo.get_by_id(id)
         if not user:
             raise UserNotFound()
-        return user
+        if data.email is not None:
+            new_email = data.email.lower().strip()
+            if new_email != (user.email or "").lower():
+                existing = self.find_by_email(new_email)
+                if existing is not None and existing.id != id:
+                    raise EmailAlreadyUsed()
+        try:
+            updated = self.repo.update(id, data)
+        except IntegrityError:
+            raise EmailAlreadyUsed("This email is already used.")
+        if updated is None:
+            raise UserNotFound()
+        return updated
 
     def delete(self, id: int) -> bool:
         deleted = self.repo.delete(id)
