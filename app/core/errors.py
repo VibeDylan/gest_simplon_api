@@ -101,6 +101,25 @@ class SessionNotFound(AppError):
     def __init__(self, message: str = "Session not found."):
         super().__init__(code=self.code, message=message)
 
+
+class EnrollmentNotFound(AppError):
+    """Levée lorsqu'aucune inscription ne correspond à l'id ou aux critères demandés."""
+
+    code = "ENROLLMENT_NOT_FOUND"
+
+    def __init__(self, message: str = "Enrollment not found."):
+        super().__init__(code=self.code, message=message)
+
+
+class EnrollmentAlreadyExists(AppError):
+    """Levée lors d'une création si l'inscription (session_id, student_id) existe déjà."""
+
+    code = "ENROLLMENT_ALREADY_EXISTS"
+
+    def __init__(self, message: str = "This enrollment already exists."):
+        super().__init__(code=self.code, message=message)
+
+
 __all__ = [
     "AppError",
     "UserNotFound",
@@ -112,4 +131,6 @@ __all__ = [
     "SessionStartDateAlreadyExists",
     "SessionEndDateAlreadyExists",
     "SessionNotFound",
+    "EnrollmentNotFound",
+    "EnrollmentAlreadyExists",
 ]
