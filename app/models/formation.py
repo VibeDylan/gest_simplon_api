@@ -1,3 +1,9 @@
+"""
+Modèle formation (table `formations`).
+
+Définit un parcours de formation avec niveau et durée.
+Une formation peut avoir plusieurs sessions.
+"""
 from __future__ import annotations
 
 from datetime import datetime
@@ -11,12 +17,27 @@ if TYPE_CHECKING:
 
 
 class Level(str, Enum):
+    """Niveau de la formation : débutant, intermédiaire, avancé."""
+
     BEGINNER = "beginner"
     INTERMEDIATE = "intermediate"
     ADVANCED = "advanced"
 
 
 class Formation(SQLModel, table=True):
+    """
+    Formation (parcours pédagogique).
+
+    Attributes:
+        id: Clé primaire.
+        title: Titre (min 2 caractères).
+        description: Description optionnelle.
+        duration_hours: Durée en heures (strictement positive).
+        level: Niveau (beginner, intermediate, advanced).
+        created_at, updated_at: Horodatages.
+        sessions: Liste des sessions associées.
+    """
+
     __tablename__ = "formations"
 
     id: Optional[int] = Field(default=None, primary_key=True)

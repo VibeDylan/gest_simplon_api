@@ -1,3 +1,9 @@
+"""
+Environnement Alembic pour les migrations.
+
+Utilise DATABASE_URL depuis app.core.config (fichier .env) et le metadata
+de app.db.base pour l'autogenerate. Supporte les modes offline et online.
+"""
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -7,11 +13,10 @@ from app.core.config import settings
 
 from alembic import context
 
-# this is the Alembic Config object, which provides
-# access to the values within the .ini file in use.
+# Objet de config Alembic (valeurs du .ini).
 config = context.config
 
-# Remplacer l'URL par DATABASE_URL depuis .env (settings)
+# URL de connexion : prise depuis .env via settings (prioritaire sur alembic.ini).
 config.set_main_option("sqlalchemy.url", settings.database_url)
 
 # Interpret the config file for Python logging.

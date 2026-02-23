@@ -1,3 +1,9 @@
+"""
+Modèle session (table `sessions`).
+
+Une session est une instance d'une formation, animée par un formateur,
+avec des dates, une capacité max et un statut. Les apprenants s'y inscrivent via Enrollment.
+"""
 from __future__ import annotations
 
 from datetime import datetime
@@ -13,12 +19,27 @@ if TYPE_CHECKING:
 
 
 class SessionStatus(str, Enum):
+    """Statut d'une session : planifiée, en cours, terminée."""
+
     SCHEDULED = "scheduled"
     ONGOING = "ongoing"
     COMPLETED = "completed"
 
 
 class Session(SQLModel, table=True):
+    """
+    Session de formation (créneau dans le temps).
+
+    Attributes:
+        id: Clé primaire.
+        formation_id: Formation concernée.
+        teacher_id: Formateur (User) qui anime la session.
+        start_date, end_date: Période de la session.
+        capacity_max: Nombre max de places (≥ 1).
+        status: scheduled, ongoing, completed.
+        formation, teacher, enrollments: Relations.
+    """
+
     __tablename__ = "sessions"
 
     id: Optional[int] = Field(default=None, primary_key=True)

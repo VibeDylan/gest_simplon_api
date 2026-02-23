@@ -1,3 +1,9 @@
+"""
+Modèle inscription (table `enrollments`).
+
+Table d'association entre Session et User (apprenant).
+Contrainte unique (session_id, student_id) : une inscription par session et par apprenant.
+"""
 from __future__ import annotations
 
 from datetime import datetime
@@ -12,7 +18,18 @@ if TYPE_CHECKING:
 
 
 class Enrollment(SQLModel, table=True):
-    """Table d'association Session <-> Apprenants (User). Un apprenant ne peut être inscrit qu'une fois par session."""
+    """
+    Inscription d'un apprenant à une session.
+
+    Un même apprenant ne peut être inscrit qu'une fois par session (contrainte
+    uq_enrollment_session_student).
+
+    Attributes:
+        id: Clé primaire.
+        session_id, student_id: Clés étrangères.
+        enrolled_at: Date d'inscription.
+        session, student: Relations.
+    """
 
     __tablename__ = "enrollments"
     __table_args__ = (

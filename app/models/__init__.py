@@ -1,3 +1,8 @@
+"""
+Modèles SQLModel du domaine (users, formations, sessions, enrollments).
+
+Exporte les entités et énumérations pour les imports centralisés.
+"""
 from app.models.enrollment import Enrollment
 from app.models.formation import Formation, Level
 from app.models.session import Session, SessionStatus
