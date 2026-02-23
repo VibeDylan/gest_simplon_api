@@ -119,6 +119,13 @@ class EnrollmentAlreadyExists(AppError):
     def __init__(self, message: str = "This enrollment already exists."):
         super().__init__(code=self.code, message=message)
 
+class EnrollmentSessionFull(AppError):
+    """Levée lors d'une création si la session est pleine."""
+
+    code = "ENROLLMENT_SESSION_FULL"
+
+    def __init__(self, message: str = "This session is full."):
+        super().__init__(code=self.code, message=message)
 
 __all__ = [
     "AppError",
@@ -133,4 +140,5 @@ __all__ = [
     "SessionNotFound",
     "EnrollmentNotFound",
     "EnrollmentAlreadyExists",
+    "EnrollmentSessionFull",
 ]

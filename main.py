@@ -19,6 +19,8 @@ from app.core.errors import (
     SessionStartDateAlreadyExists,
     TeacherNotFound,
     UserNotFound,
+    EnrollmentNotFound,
+    EnrollmentAlreadyExists,
 )
 
 app = FastAPI(
@@ -34,9 +36,9 @@ app.include_router(api_router, prefix="/api/v1")
 def app_error_handler(request: Request, exc: AppError) -> JSONResponse:
     """Transforme les exceptions métier en JSON { code, message } avec le bon status HTTP."""
     status_code = 500
-    if isinstance(exc, (UserNotFound, FormationNotFound, TeacherNotFound, SessionNotFound)):
+    if isinstance(exc, (UserNotFound, FormationNotFound, TeacherNotFound, SessionNotFound, EnrollmentNotFound)):
         status_code = 404
-    elif isinstance(exc, (EmailAlreadyUsed, FormationTitleAlreadyUsed)):
+    elif isinstance(exc, (EmailAlreadyUsed, FormationTitleAlreadyUsed, EnrollmentAlreadyExists)):
         status_code = 409
     elif isinstance(
         exc,
