@@ -1,20 +1,50 @@
 from typing import List
+
+from app.core.errors import (
+    EnrollmentAlreadyExists,
+    EnrollmentNotFound,
+    EnrollmentSessionFull,
+    SessionNotFound,
+    UserNotFound,
+)
 from app.models.enrollment import Enrollment
 from app.repositories.enrollment_repo import EnrollmentRepository
+from app.repositories.session_repo import SessionRepository
+from app.repositories.user_repo import UserRepository
 from app.schemas.enrollement import EnrollmentCreate, EnrollmentUpdate
-from app.core.errors import EnrollmentNotFound, EnrollmentAlreadyExists
+
 
 class EnrollmentService:
     """
     Service métier pour les inscriptions.
 
-    Orchestre le repository et applique les règles métier (unicité de l'inscription).
+    Orchestre les repositories (enrollment, session, user) et applique les règles métier :
+    session et apprenant existants, capacité non dépassée, unicité (session_id, student_id).
     """
-    def __init__(self, repo: EnrollmentRepository):
+    def __init__(
+        self,
+        repo: EnrollmentRepository,
+        session_repo: SessionRepository,
+        user_repo: UserRepository,
+    ):
         self.repo = repo
+        self.session_repo = session_repo
+        self.user_repo = user_repo
 
     def create(self, data: EnrollmentCreate) -> Enrollment:
-        """Crée une inscription. Lève EnrollmentAlreadyExists si (session_id, student_id) existe déjà."""
+        """
+        Crée une inscription.
+        Lève SessionNotFound si la session n'existe pas, UserNotFound si l'apprenant n'existe pas,
+        EnrollmentSessionFull si la session est pleine, EnrollmentAlreadyExists si déjà inscrit.
+        """
+        session = self.session_repo.get_by_id(data.session_id)
+        if session is None:
+            raise SessionNotFound()
+        if self.user_repo.get_by_id(data.student_id) is None:
+            raise UserNotFound()
+        current_count = len(self.repo.list_by_session_id(data.session_id))
+        if current_count >= session.capacity_max:
+            raise EnrollmentSessionFull()
         if self.repo.get_by_session_id_and_student_id(data.session_id, data.student_id) is not None:
             raise EnrollmentAlreadyExists()
         return self.repo.create(data)

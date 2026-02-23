@@ -5,6 +5,8 @@ from sqlmodel import Session
 
 from app.db.session import get_session
 from app.repositories.enrollment_repo import EnrollmentRepository
+from app.repositories.session_repo import SessionRepository
+from app.repositories.user_repo import UserRepository
 from app.schemas.enrollement import EnrollmentCreate, EnrollmentRead, EnrollmentUpdate
 from app.services.enrollment_service import EnrollmentService
 
@@ -13,9 +15,12 @@ router = APIRouter(prefix="/enrollments", tags=["enrollments"])
 
 
 def get_enrollment_service(session: Session = Depends(get_session)) -> EnrollmentService:
-    """Injecte session DB → repository → service pour les routes enrollments."""
-    repo = EnrollmentRepository(session)
-    return EnrollmentService(repo)
+    """Injecte session DB → repositories (enrollment, session, user) → service."""
+    return EnrollmentService(
+        EnrollmentRepository(session),
+        SessionRepository(session),
+        UserRepository(session),
+    )
 
 
 @router.post("", response_model=EnrollmentRead, status_code=201)
