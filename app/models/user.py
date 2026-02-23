@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Optional
 
 from sqlmodel import SQLModel, Field, Relationship
-from app.utils.role_class import Role
+from app.utils.enum import Role
 
 if TYPE_CHECKING:
     from app.models.enrollment import Enrollment
