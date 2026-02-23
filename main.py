@@ -8,7 +8,13 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from app.api.v1.router import api_router
-from app.core.errors import AppError, EmailAlreadyUsed, UserNotFound
+from app.core.errors import (
+    AppError,
+    EmailAlreadyUsed,
+    FormationNotFound,
+    FormationTitleAlreadyUsed,
+    UserNotFound,
+)
 
 app = FastAPI(
     title="GestSimplon API",
@@ -23,9 +29,9 @@ app.include_router(api_router, prefix="/api/v1")
 def app_error_handler(request: Request, exc: AppError) -> JSONResponse:
     """Transforme les exceptions métier en JSON { code, message } avec le bon status HTTP."""
     status_code = 500
-    if isinstance(exc, UserNotFound):
+    if isinstance(exc, (UserNotFound, FormationNotFound)):
         status_code = 404
-    elif isinstance(exc, EmailAlreadyUsed):
+    elif isinstance(exc, (EmailAlreadyUsed, FormationTitleAlreadyUsed)):
         status_code = 409
     return JSONResponse(
         status_code=status_code,

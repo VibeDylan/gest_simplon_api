@@ -38,6 +38,15 @@ class FormationRepository:
         """Retourne la formation d'id donné ou None."""
         return self.session.get(Formation, id)
 
+    def get_by_title(self, title: str) -> Optional[Formation]:
+        """Retourne la formation avec ce titre (comparaison insensible à la casse) ou None."""
+        title = title.strip()
+        if not title:
+            return None
+        return self.session.exec(
+            select(Formation).where(Formation.title.ilike(title))
+        ).first()
+
     def exists(self, id: int) -> bool:
         """Retourne True si une formation avec cet id existe, False sinon."""
         return self.get_by_id(id) is not None

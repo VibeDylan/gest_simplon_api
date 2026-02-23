@@ -41,4 +41,30 @@ class EmailAlreadyUsed(AppError):
         super().__init__(code=self.code, message=message)
 
 
-__all__ = ["AppError", "UserNotFound", "EmailAlreadyUsed"]
+class FormationNotFound(AppError):
+    """Levée lorsqu'aucune formation ne correspond à l'id demandé."""
+
+    code = "FORMATION_NOT_FOUND"
+
+    def __init__(self, message: str = "Formation not found."):
+        super().__init__(code=self.code, message=message)
+
+
+class FormationTitleAlreadyUsed(AppError):
+    """Levée lors d'une création ou mise à jour si le titre de formation est déjà utilisé."""
+
+    code = "FORMATION_TITLE_ALREADY_USED"
+
+    def __init__(self, message: Optional[str] = None):
+        if message is None:
+            message = "A formation with this title already exists."
+        super().__init__(code=self.code, message=message)
+
+
+__all__ = [
+    "AppError",
+    "UserNotFound",
+    "EmailAlreadyUsed",
+    "FormationNotFound",
+    "FormationTitleAlreadyUsed",
+]
