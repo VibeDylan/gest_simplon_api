@@ -19,3 +19,12 @@ class Level(str, Enum):
     BEGINNER = "beginner"
     INTERMEDIATE = "intermediate"
     ADVANCED = "advanced"
+
+
+class SessionStatus(str, Enum):
+    """Statut d'une session : planifiée, en cours, terminée."""
+
+    SCHEDULED = "scheduled"
+    ONGOING = "ongoing"
+    COMPLETED = "completed"
+

@@ -8,22 +8,15 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, List
 
+from app.utils.enum import SessionStatus
 from sqlmodel import SQLModel, Field, Relationship
 
 if TYPE_CHECKING:
     from app.models.enrollment import Enrollment
     from app.models.formation import Formation
     from app.models.user import User
-
-
-class SessionStatus(str, Enum):
-    """Statut d'une session : planifiée, en cours, terminée."""
-
-    SCHEDULED = "scheduled"
-    ONGOING = "ongoing"
-    COMPLETED = "completed"
 
 
 class Session(SQLModel, table=True):
@@ -36,8 +29,15 @@ class Session(SQLModel, table=True):
         teacher_id: Formateur (User) qui anime la session.
         start_date, end_date: Période de la session.
         capacity_max: Nombre max de places (≥ 1).
-        status: scheduled, ongoing, completed.
-        formation, teacher, enrollments: Relations.
+        status: SessionStatus.
+        formation: Formation.
+        teacher: User.
+        enrollments: List[Enrollment].
+
+    Relations:
+        formation: Formation.
+        teacher: User.
+        enrollments: List[Enrollment].
     """
 
     __tablename__ = "sessions"

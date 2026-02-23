@@ -1,9 +1,11 @@
-from pydantic import BaseModel
-from typing import Optional
-from app.utils.enum import Level
-from pydantic import ConfigDict
-from typing import Any
 from datetime import datetime
+from typing import Any, Optional
+
+from pydantic import BaseModel, ConfigDict, model_validator
+
+from app.utils.enum import Level
+
+MAX_DURATION_HOURS = 10_000
 
 
 class FormationCreate(BaseModel):
@@ -21,12 +23,20 @@ class FormationCreate(BaseModel):
     level: Level
 
     model_config = ConfigDict(str_strip_whitespace=True)
-    def model_post_init(self, __context: Any):
+
+    @model_validator(mode="after")
+    def check_title_and_duration(self) -> "FormationCreate":
+        if len((self.title or "").strip()) < 2:
+            raise ValueError("title must have at least 2 characters")
+        if not (1 <= self.duration_hours <= MAX_DURATION_HOURS):
+            raise ValueError(f"duration_hours must be between 1 and {MAX_DURATION_HOURS}")
+        return self
+
+    def model_post_init(self, __context: Any) -> None:
         self.title = self.title.strip()
         self.description = self.description.strip() if self.description else None
         self.duration_hours = max(1, int(self.duration_hours))
         self.level = Level(self.level)
-
 
 
 class FormationUpdate(BaseModel):
@@ -44,15 +54,25 @@ class FormationUpdate(BaseModel):
     level: Optional[Level] = None
 
     model_config = ConfigDict(str_strip_whitespace=True)
-    def model_post_init(self, __context: Any):
-        if self.title:
+
+    @model_validator(mode="after")
+    def check_title_and_duration(self) -> "FormationUpdate":
+        if self.title is not None and len(self.title.strip()) < 2:
+            raise ValueError("title must have at least 2 characters")
+        if self.duration_hours is not None and not (1 <= self.duration_hours <= MAX_DURATION_HOURS):
+            raise ValueError(f"duration_hours must be between 1 and {MAX_DURATION_HOURS}")
+        return self
+
+    def model_post_init(self, __context: Any) -> None:
+        if self.title is not None:
             self.title = self.title.strip()
-        if self.description:
+        if self.description is not None:
             self.description = self.description.strip()
-        if self.duration_hours:
+        if self.duration_hours is not None:
             self.duration_hours = max(1, int(self.duration_hours))
-        if self.level:
+        if self.level is not None:
             self.level = Level(self.level)
+
 
 class FormationRead(BaseModel):
     """

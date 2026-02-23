@@ -7,7 +7,7 @@ Les emails sont normalisés en minuscules à la validation.
 from datetime import datetime
 from typing import Any, Optional
 
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr, model_validator
 
 from app.utils.enum import Role
 
@@ -26,7 +26,15 @@ class UserCreate(BaseModel):
 
     model_config = ConfigDict(str_strip_whitespace=True)
 
-    def model_post_init(self, __context: Any):
+    @model_validator(mode="after")
+    def check_names_length(self) -> "UserCreate":
+        if len((self.first_name or "").strip()) < 2:
+            raise ValueError("first_name must have at least 2 characters")
+        if len((self.last_name or "").strip()) < 2:
+            raise ValueError("last_name must have at least 2 characters")
+        return self
+
+    def model_post_init(self, __context: Any) -> None:
         self.email = self.email.lower()
 
 
@@ -44,8 +52,16 @@ class UserUpdate(BaseModel):
 
     model_config = ConfigDict(str_strip_whitespace=True)
 
-    def model_post_init(self, __context: Any):
-        if self.email:
+    @model_validator(mode="after")
+    def check_names_length(self) -> "UserUpdate":
+        if self.first_name is not None and len(self.first_name.strip()) < 2:
+            raise ValueError("first_name must have at least 2 characters")
+        if self.last_name is not None and len(self.last_name.strip()) < 2:
+            raise ValueError("last_name must have at least 2 characters")
+        return self
+
+    def model_post_init(self, __context: Any) -> None:
+        if self.email is not None:
             self.email = self.email.lower()
 
 
