@@ -61,10 +61,55 @@ class FormationTitleAlreadyUsed(AppError):
         super().__init__(code=self.code, message=message)
 
 
+class TeacherNotFound(AppError):
+    """Levée lorsqu'aucun formateur ne correspond à l'id demandé."""
+
+    code = "TEACHER_NOT_FOUND"
+
+    def __init__(self, message: str = "Teacher not found."):
+        super().__init__(code=self.code, message=message)
+
+class SessionStartDateAfterEndDate(AppError):
+    """Levée lors d'une création ou mise à jour si la date de début est après la date de fin."""
+
+    code = "SESSION_START_DATE_AFTER_END_DATE"
+
+    def __init__(self, message: str = "Session start date must be before end date."):
+        super().__init__(code=self.code, message=message)
+
+class SessionStartDateAlreadyExists(AppError):
+    """Levée lors d'une création ou mise à jour si la date de début existe déjà."""
+
+    code = "SESSION_START_DATE_ALREADY_EXISTS"
+
+    def __init__(self, message: str = "Session start date already exists."):
+        super().__init__(code=self.code, message=message)
+
+class SessionEndDateAlreadyExists(AppError):
+    """Levée lors d'une création ou mise à jour si la date de fin existe déjà."""
+
+    code = "SESSION_END_DATE_ALREADY_EXISTS"
+
+    def __init__(self, message: str = "Session end date already exists."):
+        super().__init__(code=self.code, message=message)
+
+class SessionNotFound(AppError):
+    """Levée lorsqu'aucune session ne correspond à l'id demandé."""
+
+    code = "SESSION_NOT_FOUND"
+
+    def __init__(self, message: str = "Session not found."):
+        super().__init__(code=self.code, message=message)
+
 __all__ = [
     "AppError",
     "UserNotFound",
     "EmailAlreadyUsed",
     "FormationNotFound",
     "FormationTitleAlreadyUsed",
+    "TeacherNotFound",
+    "SessionStartDateAfterEndDate",
+    "SessionStartDateAlreadyExists",
+    "SessionEndDateAlreadyExists",
+    "SessionNotFound",
 ]

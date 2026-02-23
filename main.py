@@ -13,6 +13,11 @@ from app.core.errors import (
     EmailAlreadyUsed,
     FormationNotFound,
     FormationTitleAlreadyUsed,
+    SessionEndDateAlreadyExists,
+    SessionNotFound,
+    SessionStartDateAfterEndDate,
+    SessionStartDateAlreadyExists,
+    TeacherNotFound,
     UserNotFound,
 )
 
@@ -29,10 +34,15 @@ app.include_router(api_router, prefix="/api/v1")
 def app_error_handler(request: Request, exc: AppError) -> JSONResponse:
     """Transforme les exceptions métier en JSON { code, message } avec le bon status HTTP."""
     status_code = 500
-    if isinstance(exc, (UserNotFound, FormationNotFound)):
+    if isinstance(exc, (UserNotFound, FormationNotFound, TeacherNotFound, SessionNotFound)):
         status_code = 404
     elif isinstance(exc, (EmailAlreadyUsed, FormationTitleAlreadyUsed)):
         status_code = 409
+    elif isinstance(
+        exc,
+        (SessionStartDateAfterEndDate, SessionStartDateAlreadyExists, SessionEndDateAlreadyExists),
+    ):
+        status_code = 400
     return JSONResponse(
         status_code=status_code,
         content={"code": exc.code, "message": exc.message},
