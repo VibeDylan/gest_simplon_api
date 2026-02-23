@@ -132,3 +132,14 @@ class SessionService:
         if session is None:
             raise SessionNotFound()
         return session
+
+    def get_by_formation_id_and_teacher_id(
+        self, formation_id: int, teacher_id: int
+    ) -> Session:
+        """Retourne la première session pour cette formation et ce formateur. Lève SessionNotFound si aucune."""
+        session = self.repo.get_by_formation_id_and_teacher_id(
+            formation_id, teacher_id
+        )
+        if session is None:
+            raise SessionNotFound()
+        return session

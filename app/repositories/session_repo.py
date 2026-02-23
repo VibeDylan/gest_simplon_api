@@ -111,3 +111,14 @@ class SessionRepository:
         return self.session.exec(
             select(SessionModel).where(SessionModel.end_date == end_date)
         ).first()
+
+    def get_by_formation_id_and_teacher_id(
+        self, formation_id: int, teacher_id: int
+    ) -> Optional[SessionModel]:
+        """Retourne la première session pour cette formation et ce formateur, ou None."""
+        return self.session.exec(
+            select(SessionModel).where(
+                SessionModel.formation_id == formation_id,
+                SessionModel.teacher_id == teacher_id,
+            )
+        ).first()
