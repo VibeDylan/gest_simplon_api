@@ -42,6 +42,7 @@ class User(SQLModel, table=True):
     email: str = Field(unique=True, index=True)
     first_name: str = Field(min_length=2)
     last_name: str = Field(min_length=2)
+    hashed_password: str = Field(min_length=8)
     registered_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(
         default_factory=datetime.utcnow,

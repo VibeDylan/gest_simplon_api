@@ -7,7 +7,7 @@ from typing import List, Optional
 
 from pydantic import EmailStr
 from sqlalchemy.exc import IntegrityError
-
+import bcrypt
 from app.core.errors import EmailAlreadyUsed, UserNotFound
 from app.models.user import User
 from app.repositories.user_repo import UserRepository
@@ -35,7 +35,8 @@ class UserService:
         email = data.email.lower().strip()
         if self.find_by_email(email):
             raise EmailAlreadyUsed()
-        return self.repo.create(data)
+        hashed = self.hash_password(data.password)
+        return self.repo.create(data, hashed_password=hashed)
 
     def get_by_id(self, id: int) -> User:
         """Retourne l'utilisateur d'id donné ou lève UserNotFound."""
@@ -67,8 +68,11 @@ class UserService:
                 existing = self.find_by_email(new_email)
                 if existing is not None and existing.id != id:
                     raise EmailAlreadyUsed()
+        hashed_password = None
+        if data.password is not None:
+            hashed_password = self.hash_password(data.password)
         try:
-            updated = self.repo.update(id, data)
+            updated = self.repo.update(id, data, hashed_password=hashed_password)
         except IntegrityError:
             raise EmailAlreadyUsed("This email is already used.")
         if updated is None:
@@ -81,3 +85,7 @@ class UserService:
         if not deleted:
             raise UserNotFound()
         return deleted
+
+    def hash_password(self, password: str) -> str: 
+        """Hash un mot de passe en utilisant bcrypt."""
+        return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')

@@ -22,6 +22,7 @@ class UserCreate(BaseModel):
     email: EmailStr
     first_name: str
     last_name: str
+    password: str
     role: Role = Role.LEARNER
 
     model_config = ConfigDict(str_strip_whitespace=True)
@@ -31,6 +32,13 @@ class UserCreate(BaseModel):
     def first_name_min_length(cls, v: str) -> str:
         if len((v or "").strip()) < 2:
             raise ValueError("first_name must have at least 2 characters")
+        return v
+
+    @field_validator("password")
+    @classmethod
+    def password_min_length(cls, v: str) -> str:
+        if len((v or "")) < 8:
+            raise ValueError("password must have at least 8 characters")
         return v
 
     @field_validator("last_name")
@@ -54,6 +62,7 @@ class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None
+    password: Optional[str] = None
     role: Optional[Role] = None
 
     model_config = ConfigDict(str_strip_whitespace=True)
@@ -70,6 +79,13 @@ class UserUpdate(BaseModel):
     def last_name_min_length(cls, v: Optional[str]) -> Optional[str]:
         if v is not None and len(v.strip()) < 2:
             raise ValueError("last_name must have at least 2 characters")
+        return v
+
+    @field_validator("password")
+    @classmethod
+    def password_min_length(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None and len(v) < 8:
+            raise ValueError("password must have at least 8 characters")
         return v
 
     def model_post_init(self, __context: Any) -> None:

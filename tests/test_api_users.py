@@ -17,10 +17,10 @@ def test_create_user_ok(client: TestClient) -> None:
             "email": email,
             "first_name": "Test",
             "last_name": "Test",
+            "password": "password123",
             "role": "admin",
         },
     )
-
 
     assert response.status_code == 201
     assert response.json()["email"] == email
@@ -36,6 +36,7 @@ def test_create_user_email_already_used(client: TestClient) -> None:
             "email": "test@test.com",
             "first_name": "Test",
             "last_name": "Test",
+            "password": "password123",
             "role": "admin",
         },
     )
@@ -51,6 +52,7 @@ def test_create_user_invalid_role(client: TestClient) -> None:
             "email": "test@test.com",
             "first_name": "Test",
             "last_name": "Test",
+            "password": "password123",
             "role": "invalid",
         },
     )
@@ -64,12 +66,12 @@ def test_create_user_first_name_too_short(client: TestClient) -> None:
         "/api/v1/users",
         json={
             "email": "test@test.com",
-            "first_name": "T",  
+            "first_name": "T",
             "last_name": "Test",
+            "password": "password123",
             "role": "admin",
         },
     )
-
     assert response.status_code == 422
     body = response.json()
     assert body["code"] == "VALIDATION_ERROR"
@@ -84,6 +86,7 @@ def test_create_user_last_name_too_short(client: TestClient) -> None:
             "email": "shortlast@test.com",
             "first_name": "Test",
             "last_name": "X",
+            "password": "password123",
             "role": "learner",
         },
     )
@@ -101,6 +104,7 @@ def test_create_user_invalid_email(client: TestClient) -> None:
             "email": "not-an-email",
             "first_name": "Test",
             "last_name": "Test",
+            "password": "password123",
             "role": "learner",
         },
     )
@@ -119,6 +123,7 @@ def test_list_users_ok(client: TestClient) -> None:
             "email": email1,
             "first_name": "Test1",
             "last_name": "Test1",
+            "password": "password123",
             "role": "admin",
         },
     )
@@ -128,6 +133,7 @@ def test_list_users_ok(client: TestClient) -> None:
             "email": email2,
             "first_name": "Test2",
             "last_name": "Test2",
+            "password": "password123",
             "role": "admin",
         },
     )
@@ -155,6 +161,7 @@ def test_get_user_ok(client: TestClient) -> None:
             "email": email,
             "first_name": "Jean",
             "last_name": "Dupont",
+            "password": "password123",
             "role": "trainer",
         },
     )
@@ -189,6 +196,7 @@ def test_update_user_ok(client: TestClient) -> None:
             "email": email,
             "first_name": "Before",
             "last_name": "Name",
+            "password": "password123",
             "role": "learner",
         },
     )
@@ -222,11 +230,11 @@ def test_update_user_email_already_used(client: TestClient) -> None:
     email2 = f"update2_{uuid.uuid4()}@test.com"
     client.post(
         "/api/v1/users",
-        json={"email": email1, "first_name": "User", "last_name": "One", "role": "learner"},
+        json={"email": email1, "first_name": "User", "last_name": "One", "password": "password123", "role": "learner"},
     )
     create2 = client.post(
         "/api/v1/users",
-        json={"email": email2, "first_name": "User", "last_name": "Two", "role": "learner"},
+        json={"email": email2, "first_name": "User", "last_name": "Two", "password": "password123", "role": "learner"},
     )
     assert create2.status_code == 201
     user2_id = create2.json()["id"]
@@ -248,6 +256,7 @@ def test_delete_user_ok(client: TestClient) -> None:
             "email": email,
             "first_name": "To",
             "last_name": "Delete",
+            "password": "password123",
             "role": "learner",
         },
     )

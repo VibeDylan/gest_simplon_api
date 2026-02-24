@@ -26,9 +26,11 @@ class UserRepository:
         """Initialise le repository avec la session SQLModel injectée."""
         self.session = session
 
-    def create(self, data: UserCreate) -> User:
+    def create(self, data: UserCreate, *, hashed_password: str) -> User:
         """Crée un utilisateur en base et retourne l'instance avec id rempli."""
-        user = User(**data.model_dump())
+        payload = data.model_dump(exclude={"password"})
+        payload["hashed_password"] = hashed_password
+        user = User(**payload)
         self.session.add(user)
         self.session.commit()
         self.session.refresh(user)
@@ -50,12 +52,17 @@ class UserRepository:
             self.session.exec(select(User).offset(offset).limit(limit)).all()
         )
 
-    def update(self, id: int, data: UserUpdate) -> Optional[User]:
+    def update(
+        self, id: int, data: UserUpdate, *, hashed_password: Optional[str] = None
+    ) -> Optional[User]:
         """Met à jour l'utilisateur par id (champs fournis uniquement). Retourne None si absent."""
         user = self.get_by_id(id)
         if user is None:
             return None
         payload = data.model_dump(exclude_unset=True)
+        payload.pop("password", None)
+        if hashed_password is not None:
+            payload["hashed_password"] = hashed_password
         for key, value in payload.items():
             setattr(user, key, value)
         self.session.commit()

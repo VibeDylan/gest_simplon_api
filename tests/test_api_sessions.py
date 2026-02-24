@@ -32,6 +32,7 @@ def _make_trainer(client: TestClient) -> int:
             "email": email,
             "first_name": "Trainer",
             "last_name": "User",
+            "password": "password123",
             "role": "trainer",
         },
     )
@@ -48,6 +49,7 @@ def _make_learner(client: TestClient) -> int:
             "email": email,
             "first_name": "Learner",
             "last_name": "User",
+            "password": "password123",
             "role": "learner",
         },
     )
