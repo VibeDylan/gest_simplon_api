@@ -16,9 +16,9 @@ class Role(str, Enum):
 class Level(str, Enum):
     """Niveau de la formation : débutant, intermédiaire, avancé."""
 
-    BEGINNER = "beginner"
-    INTERMEDIATE = "intermediate"
-    ADVANCED = "advanced"
+    BEGINNER = 0
+    INTERMEDIATE = 1
+    ADVANCED = 2
 
 
 class SessionStatus(str, Enum):
