@@ -108,7 +108,7 @@ Le metadata Alembic est fourni par `app.db.base` (`target_metadata = SQLModel.me
 ```
 gestsimplon/
 ├── main.py                 # Point d’entrée FastAPI
-├── requirements.txt
+├── requirements.txt        # Dépendances (FastAPI, SQLModel, Pydantic v2, Pytest, ...)
 ├── docker-compose.yml      # Postgres
 ├── alembic.ini
 ├── .env.example / .env
@@ -120,16 +120,34 @@ gestsimplon/
 │   │   ├── base.py         # Metadata pour Alembic, imports des modèles
 │   │   └── session.py      # Engine + get_session() (SQLModel Session)
 │   ├── models/             # Modèles SQLModel (tables)
-│   │   ├── user.py         # Role, User
+│   │   ├── user.py         # Role, User (admin / trainer / learner)
 │   │   ├── formation.py    # Level, Formation
 │   │   ├── session.py      # SessionStatus, Session
-│   │   └── enrollment.py   # Enrollment (table d’association)
+│   │   └── enrollment.py   # Enrollment (inscription Session ↔ Apprenant)
 │   ├── schemas/            # DTOs Pydantic (validation entrée/sortie)
-│   │   └── user.py         # UserCreate, UserUpdate, UserRead
-│   ├── repositories/       # Accès données (CRUD par entité)
-│   │   └── user_repo.py    # UserRepository
+│   │   ├── user.py         # UserCreate, UserUpdate, UserRead
+│   │   ├── formation.py    # FormationCreate, FormationUpdate, FormationRead
+│   │   ├── session.py      # SessionCreate, SessionUpdate, SessionRead
+│   │   └── enrollement.py  # EnrollmentCreate, EnrollmentUpdate, EnrollmentRead
+│   ├── repositories/       # Accès données (CRUD par entité, SQLModel)
+│   │   ├── user_repo.py       # UserRepository
+│   │   ├── formation_repo.py  # FormationRepository (pagination, filtres)
+│   │   ├── session_repo.py    # SessionRepository (pagination, filtres, recherches)
+│   │   └── enrollment_repo.py # EnrollmentRepository
+│   ├── services/           # Services métier (règles métiers + orchestrations)
+│   │   ├── user_service.py       # Emails uniques, rôles
+│   │   ├── formation_service.py  # Titre unique, durée > 0
+│   │   ├── session_service.py    # Vérif formation / formateur, dates, capacité
+│   │   └── enrollment_service.py # Unicité (session_id, student_id), capacité, session existante
+│   ├── api/
+│   │   └── v1/
+│   │       ├── users.py        # Routes CRUD utilisateurs
+│   │       ├── formations.py   # Routes CRUD formations
+│   │       ├── sessions.py     # Routes CRUD + filtres sessions
+│   │       ├── enrollment.py   # Routes inscriptions (créer, lister, désinscrire)
+│   │       └── router.py       # Agrégation des routeurs v1
 │   └── utils/
-│       └── enum.py        # Role (partagé modèle / schémas)
+│       └── enum.py         # Enums partagées (Role, Level, SessionStatus)
 │
 ├── alembic/
 │   ├── env.py              # Utilise settings.database_url
@@ -161,4 +179,41 @@ pytest --cov=app   # avec couverture
 ```
 
 Dépendances : `pytest`, `pytest-cov` (dans `requirements.txt`).
+
+Les tests d’API principaux sont organisés par ressource dans `tests/` :
+
+```text
+tests/
+├── conftest.py            # client FastAPI, fixtures DB
+├── test_api_users.py      # CRUD utilisateurs + erreurs
+├── test_api_formations.py # CRUD formations + pagination/filtres
+├── test_api_sessions.py   # CRUD sessions + filtres par formation / formateur / dates
+└── test_api_enrollments.py# Inscriptions (création, capacité, unicité, désinscription)
+```
+
+Les erreurs de validation Pydantic sont centralisées dans `main.py` et renvoyées sous la forme :
+
+```json
+{
+  "code": "VALIDATION_ERROR",
+  "message": "Champs invalides ou manquants : email, first_name.",
+  "details": [
+    { "field": "email", "message": "Champ requis" },
+    { "field": "first_name", "message": "Champ requis" }
+  ]
+}
+```
+
+Les dates des sessions / inscriptions attendent le format **datetime ISO 8601** en JSON, par ex. :
+
+```json
+{
+  "formation_id": 1,
+  "teacher_id": 2,
+  "start_date": "2025-10-12T09:00:00",
+  "end_date": "2025-10-12T17:00:00",
+  "capacity_max": 20,
+  "status": "scheduled"
+}
+```
 
