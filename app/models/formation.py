@@ -4,15 +4,19 @@ Modèle formation (table `formations`).
 Définit un parcours de formation avec niveau et durée.
 Une formation peut avoir plusieurs sessions.
 """
-from __future__ import annotations
-
 from datetime import datetime
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
 
 from sqlmodel import SQLModel, Field, Relationship
+
 from app.utils.enum import Level
-if TYPE_CHECKING:
+
+
+def _session_cls():
     from app.models.session import Session
+    return Session
+
+
 class Formation(SQLModel, table=True):
     """
     Formation (parcours pédagogique).
@@ -40,4 +44,4 @@ class Formation(SQLModel, table=True):
         sa_column_kwargs={"onupdate": datetime.utcnow},
     )
 
-    sessions: list["Session"] = Relationship(back_populates="formation")
+    sessions: _session_cls = Relationship(back_populates="formation")

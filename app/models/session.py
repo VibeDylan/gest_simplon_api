@@ -4,11 +4,8 @@ Modèle session (table `sessions`).
 Une session est une instance d'une formation, animée par un formateur,
 avec des dates, une capacité max et un statut. Les apprenants s'y inscrivent via Enrollment.
 """
-from __future__ import annotations
-
 from datetime import datetime
-from enum import Enum
-from typing import TYPE_CHECKING, Optional, List
+from typing import TYPE_CHECKING, List, Optional
 
 from app.utils.enum import SessionStatus
 from sqlmodel import SQLModel, Field, Relationship
@@ -17,6 +14,21 @@ if TYPE_CHECKING:
     from app.models.enrollment import Enrollment
     from app.models.formation import Formation
     from app.models.user import User
+
+
+def _formation_cls():
+    from app.models.formation import Formation
+    return Formation
+
+
+def _user_cls():
+    from app.models.user import User
+    return User
+
+
+def _enrollment_cls():
+    from app.models.enrollment import Enrollment
+    return Enrollment
 
 
 class Session(SQLModel, table=True):
@@ -33,11 +45,6 @@ class Session(SQLModel, table=True):
         formation: Formation.
         teacher: User.
         enrollments: List[Enrollment].
-
-    Relations:
-        formation: Formation.
-        teacher: User.
-        enrollments: List[Enrollment].
     """
 
     __tablename__ = "sessions"
@@ -50,6 +57,7 @@ class Session(SQLModel, table=True):
     capacity_max: int = Field(ge=1, default=1)
     status: SessionStatus = Field(default=SessionStatus.SCHEDULED)
 
-    formation: "Formation" = Relationship(back_populates="sessions")
-    teacher: "User" = Relationship(back_populates="taught_sessions")
-    enrollments: list["Enrollment"] = Relationship(back_populates="session")
+    # Callables pour résolution différée (évite KeyError "'Formation'" avec Python 3.14)
+    formation: _formation_cls = Relationship(back_populates="sessions")
+    teacher: _user_cls = Relationship(back_populates="taught_sessions")
+    enrollments: _enrollment_cls = Relationship(back_populates="session")

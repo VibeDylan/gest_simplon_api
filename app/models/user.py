@@ -4,17 +4,22 @@ Modèle utilisateur (table `users`).
 Représente un utilisateur du système : admin, formateur (trainer) ou apprenant (learner).
 Lié aux sessions qu'il anime (taught_sessions) et aux inscriptions (enrollments).
 """
-from __future__ import annotations
-
 from datetime import datetime
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
 
 from sqlmodel import SQLModel, Field, Relationship
+
 from app.utils.enum import Role
 
-if TYPE_CHECKING:
-    from app.models.enrollment import Enrollment
+
+def _session_cls():
     from app.models.session import Session
+    return Session
+
+
+def _enrollment_cls():
+    from app.models.enrollment import Enrollment
+    return Enrollment
 
 
 class User(SQLModel, table=True):
@@ -44,5 +49,5 @@ class User(SQLModel, table=True):
     )
     role: Role = Field(default=Role.LEARNER)
 
-    taught_sessions: list["Session"] = Relationship(back_populates="teacher")
-    enrollments: list["Enrollment"] = Relationship(back_populates="student")
+    taught_sessions: _session_cls = Relationship(back_populates="teacher")
+    enrollments: _enrollment_cls = Relationship(back_populates="student")

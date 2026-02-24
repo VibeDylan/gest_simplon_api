@@ -7,14 +7,14 @@ Contrainte unique (session_id, student_id) : une inscription par session et par 
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TYPE_CHECKING, Optional
+from typing import Optional
 
 from sqlalchemy import UniqueConstraint
 from sqlmodel import SQLModel, Field, Relationship
 
-if TYPE_CHECKING:
-    from app.models.session import Session
-    from app.models.user import User
+# Import à l'exécution pour que SQLAlchemy résolve les relations (évite KeyError "'Session'").
+from app.models.session import Session
+from app.models.user import User
 
 
 class Enrollment(SQLModel, table=True):
@@ -41,5 +41,5 @@ class Enrollment(SQLModel, table=True):
     student_id: int = Field(foreign_key="users.id")
     enrolled_at: datetime = Field(default_factory=datetime.utcnow)
 
-    session: "Session" = Relationship(back_populates="enrollments")
-    student: "User" = Relationship(back_populates="enrollments")
+    session: Session = Relationship(back_populates="enrollments")
+    student: User = Relationship(back_populates="enrollments")
