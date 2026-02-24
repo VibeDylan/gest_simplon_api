@@ -13,7 +13,10 @@ from app.utils.enum import Level
 
 
 class FormationService:
+    """Orchestre le repository formation et les règles métier (unicité du titre)."""
+
     def __init__(self, repo: FormationRepository):
+        """Initialise le service avec le repository injecté."""
         self.repo = repo
 
     def find_by_title(self, title: str) -> Optional[Formation]:

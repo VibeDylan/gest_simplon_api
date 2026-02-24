@@ -1,3 +1,9 @@
+"""
+Routes sessions (CRUD et listes par formation / formateur / dates).
+
+CRUD sessions et endpoints pour lister par formation_id, teacher_id,
+ou récupérer par date de début / fin.
+"""
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException

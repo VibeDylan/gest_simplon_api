@@ -1,9 +1,15 @@
-from fastapi import responses
-from fastapi.testclient import TestClient
+"""
+Tests d'intégration pour les routes utilisateurs (API v1).
+
+Vérifient la création, la liste, les erreurs de validation et les conflits (email déjà utilisé).
+"""
 import uuid
+
+from fastapi.testclient import TestClient
 
 
 def test_create_user_ok(client: TestClient) -> None:
+    """Création d'un utilisateur avec email unique renvoie 201 et les champs attendus."""
     email = f"test_{uuid.uuid4()}@test.com"
     response = client.post(
         "/api/v1/users",
@@ -23,6 +29,7 @@ def test_create_user_ok(client: TestClient) -> None:
     assert response.json()["role"] == "admin"
 
 def test_create_user_email_already_used(client: TestClient) -> None:
+    """Création avec un email déjà utilisé renvoie 409 et le code EMAIL_ALREADY_USED."""
     response = client.post(
         "/api/v1/users",
         json={
@@ -37,6 +44,7 @@ def test_create_user_email_already_used(client: TestClient) -> None:
     assert response.json()["message"] == "This email is already used."
 
 def test_create_user_invalid_role(client: TestClient) -> None:
+    """Création avec un rôle invalide renvoie 422 et VALIDATION_ERROR."""
     response = client.post(
         "/api/v1/users",
         json={
@@ -51,6 +59,7 @@ def test_create_user_invalid_role(client: TestClient) -> None:
     assert response.json()["message"] == "Champ invalide ou manquant : role."
 
 def test_create_user_first_name_too_short(client: TestClient) -> None:
+    """Création avec first_name trop court renvoie 422 et détail sur first_name."""
     response = client.post(
         "/api/v1/users",
         json={
@@ -68,6 +77,7 @@ def test_create_user_first_name_too_short(client: TestClient) -> None:
     assert any(d["field"] == "first_name" for d in body["details"])
 
 def test_list_users_ok(client: TestClient) -> None:
+    """Liste des utilisateurs renvoie 200 et contient les utilisateurs créés."""
     email1 = f"list1_{uuid.uuid4()}@test.com"
     email2 = f"list2_{uuid.uuid4()}@test.com"
 

@@ -1,3 +1,8 @@
+"""
+Schémas Pydantic pour l'entité Formation.
+
+DTOs de validation entrée (création, mise à jour) et sortie (lecture).
+"""
 from datetime import datetime
 from typing import Any, Optional
 

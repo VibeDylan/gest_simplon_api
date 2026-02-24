@@ -25,12 +25,15 @@ from app.utils.enum import Role
 
 
 class SessionService:
+    """Orchestre les repositories session, formation, user et les règles métier (dates, formateur, capacité)."""
+
     def __init__(
         self,
         repo: SessionRepository,
         formation_repo: FormationRepository,
         user_repo: UserRepository,
     ):
+        """Initialise le service avec les repositories injectés."""
         self.repo = repo
         self.formation_repo = formation_repo
         self.user_repo = user_repo

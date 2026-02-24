@@ -1,3 +1,9 @@
+"""
+Repository CRUD pour l'entité Enrollment.
+
+Encapsule l'accès en base (création, lecture, mise à jour, suppression)
+et les listes par session_id / student_id.
+"""
 from typing import List, Optional
 
 from sqlmodel import Session, select
@@ -8,11 +14,14 @@ from app.schemas.enrollement import EnrollmentCreate, EnrollmentUpdate
 
 class EnrollmentRepository:
     """
-    Repository CRUD pour l'entité Enrollment.
+    Accès données pour les inscriptions.
 
-    Encapsule l'accès en base (création, lecture, mise à jour, suppression).
+    Utilise une session SQLModel injectée. Toutes les méthodes
+    qui modifient les données font commit (create, update, delete).
     """
+
     def __init__(self, session: Session):
+        """Initialise le repository avec la session SQLModel injectée."""
         self.session = session
 
     def create(self, data: EnrollmentCreate) -> Enrollment:

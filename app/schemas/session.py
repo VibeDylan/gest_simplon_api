@@ -1,3 +1,9 @@
+"""
+Schémas Pydantic pour l'entité Session.
+
+DTOs de validation entrée (création, mise à jour) et sortie (lecture).
+Contrôle de l'ordre des dates (start_date < end_date) dans les validateurs.
+"""
 from datetime import datetime
 from typing import Any, Optional
 

@@ -1,15 +1,22 @@
-from fastapi import APIRouter
-from app.repositories.formation_repo import FormationRepository
-from app.schemas.formation import FormationCreate, FormationRead, FormationUpdate
+"""
+Routes formations (CRUD).
+
+CRUD formations avec pagination et filtres (niveau, recherche par titre).
+"""
+from fastapi import APIRouter, Depends
 from sqlmodel import Session
 from typing import List
-from app.services.formation_service import FormationService
+
 from app.db.session import get_session
-from fastapi import Depends
+from app.repositories.formation_repo import FormationRepository
+from app.schemas.formation import FormationCreate, FormationRead, FormationUpdate
+from app.services.formation_service import FormationService
+
 router = APIRouter(prefix="/formations", tags=["formations"])
 
+
 def get_formation_service(session: Session = Depends(get_session)) -> FormationService:
-    """Injecte session → repository → service pour les routes users."""
+    """Injecte session DB → repository → service pour les routes formations."""
     repo = FormationRepository(session)
     return FormationService(repo)
 

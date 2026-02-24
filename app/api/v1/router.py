@@ -1,3 +1,8 @@
+"""
+Routeur principal API v1.
+
+Agrège les sous-routeurs : users, formations, sessions, enrollments.
+"""
 from fastapi import APIRouter
 
 from app.api.v1.enrollment import router as enrollment_router

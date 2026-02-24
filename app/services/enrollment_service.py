@@ -1,3 +1,9 @@
+"""
+Service métier pour les inscriptions.
+
+Orchestre les repositories (enrollment, session, user) et applique les règles métier :
+existence session/apprenant, capacité non dépassée, unicité (session_id, student_id).
+"""
 from typing import List
 
 from app.core.errors import (
@@ -27,6 +33,7 @@ class EnrollmentService:
         session_repo: SessionRepository,
         user_repo: UserRepository,
     ):
+        """Initialise le service avec les repositories (enrollment, session, user) injectés."""
         self.repo = repo
         self.session_repo = session_repo
         self.user_repo = user_repo

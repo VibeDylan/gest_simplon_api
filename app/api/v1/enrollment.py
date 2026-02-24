@@ -1,3 +1,8 @@
+"""
+Routes inscriptions (CRUD et listes par session / étudiant).
+
+CRUD enrollments et endpoints pour lister par session_id ou student_id.
+"""
 from typing import List
 
 from fastapi import APIRouter, Depends

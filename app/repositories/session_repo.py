@@ -24,6 +24,7 @@ class SessionRepository:
     """
 
     def __init__(self, session: Session):
+        """Initialise le repository avec la session SQLModel injectée."""
         self.session = session
 
     def create(self, data: SessionCreate) -> SessionModel:

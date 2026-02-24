@@ -10,6 +10,8 @@ services:
       - "5444:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      # Scripts d'init exécutés au premier démarrage (création BDD de test, etc.)
+      - ./docker/initdb:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
