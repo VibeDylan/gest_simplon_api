@@ -12,6 +12,8 @@ from app.api.v1.router import api_router
 from app.core.errors import (
     AppError,
     EmailAlreadyUsed,
+    EnrollmentAlreadyExists,
+    EnrollmentSessionFull,
     FormationNotFound,
     FormationTitleAlreadyUsed,
     SessionEndDateAlreadyExists,
@@ -20,8 +22,8 @@ from app.core.errors import (
     SessionStartDateAlreadyExists,
     TeacherNotFound,
     UserNotFound,
+    UserNotTrainer,
     EnrollmentNotFound,
-    EnrollmentAlreadyExists,
 )
 
 app = FastAPI(
@@ -105,7 +107,13 @@ def app_error_handler(request: Request, exc: AppError) -> JSONResponse:
         status_code = 409
     elif isinstance(
         exc,
-        (SessionStartDateAfterEndDate, SessionStartDateAlreadyExists, SessionEndDateAlreadyExists),
+        (
+            SessionStartDateAfterEndDate,
+            SessionStartDateAlreadyExists,
+            SessionEndDateAlreadyExists,
+            UserNotTrainer,
+            EnrollmentSessionFull,
+        ),
     ):
         status_code = 400
     return JSONResponse(

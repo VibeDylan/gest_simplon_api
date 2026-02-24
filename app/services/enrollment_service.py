@@ -75,8 +75,11 @@ class EnrollmentService:
         return enrollment
     
     def delete(self, id: int) -> bool:
-        """Supprime l'inscription par id. Retourne True si supprimée, False si non trouvée."""
-        return self.repo.delete(id)
+        """Supprime l'inscription par id. Lève EnrollmentNotFound si absente."""
+        deleted = self.repo.delete(id)
+        if not deleted:
+            raise EnrollmentNotFound()
+        return deleted
     
     def list_by_session_id(self, session_id: int) -> List[Enrollment]:
         """Retourne toutes les inscriptions pour une session donnée."""
