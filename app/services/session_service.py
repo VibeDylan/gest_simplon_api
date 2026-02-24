@@ -14,12 +14,14 @@ from app.core.errors import (
     SessionStartDateAlreadyExists,
     SessionEndDateAlreadyExists,
     TeacherNotFound,
+    UserNotTrainer,
 )
 from app.models.session import Session
 from app.repositories.formation_repo import FormationRepository
 from app.repositories.session_repo import SessionRepository
 from app.repositories.user_repo import UserRepository
 from app.schemas.session import SessionCreate, SessionUpdate
+from app.utils.enum import Role
 
 
 class SessionService:
@@ -44,6 +46,8 @@ class SessionService:
             raise FormationNotFound()
         if self.user_repo.get_by_id(data.teacher_id) is None:
             raise TeacherNotFound()
+        if self.user_repo.get_by_id(data.teacher_id).role != Role.TRAINER:
+            raise UserNotTrainer()
         if data.start_date >= data.end_date:
             raise SessionStartDateAfterEndDate()
         if self.repo.get_by_start_date(data.start_date) is not None:

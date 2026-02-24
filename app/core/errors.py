@@ -69,6 +69,14 @@ class TeacherNotFound(AppError):
     def __init__(self, message: str = "Teacher not found."):
         super().__init__(code=self.code, message=message)
 
+class UserNotTrainer(AppError):
+    """Levée lorsqu'un utilisateur non formateur est tenté d'animer une session."""
+
+    code = "USER_NOT_TRAINER"
+
+    def __init__(self, message: str = "User is not a trainer."):
+        super().__init__(code=self.code, message=message)
+
 class SessionStartDateAfterEndDate(AppError):
     """Levée lors d'une création ou mise à jour si la date de début est après la date de fin."""
 
