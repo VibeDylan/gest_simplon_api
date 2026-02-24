@@ -15,7 +15,7 @@ class FormationCreate(BaseModel):
     title: Titre (min 2 caractères).
     description: Description optionnelle.
     duration_hours: Durée en heures (strictement positive).
-    level: Niveau (beginner, intermediate, advanced).
+    level: Niveau (0 = BEGINNER, 1 = INTERMEDIATE, 2 = ADVANCED).
     """
     title: str
     description: Optional[str] = None
