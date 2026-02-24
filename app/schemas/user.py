@@ -7,7 +7,7 @@ Les emails sont normalisés en minuscules à la validation.
 from datetime import datetime
 from typing import Any, Optional
 
-from pydantic import BaseModel, ConfigDict, EmailStr, model_validator
+from pydantic import BaseModel, ConfigDict, EmailStr, model_validator, field_validator
 
 from app.utils.enum import Role
 
@@ -26,13 +26,19 @@ class UserCreate(BaseModel):
 
     model_config = ConfigDict(str_strip_whitespace=True)
 
-    @model_validator(mode="after")
-    def check_names_length(self) -> "UserCreate":
-        if len((self.first_name or "").strip()) < 2:
+    @field_validator("first_name")
+    @classmethod
+    def first_name_min_length(cls, v: str) -> str:
+        if len((v or "").strip()) < 2:
             raise ValueError("first_name must have at least 2 characters")
-        if len((self.last_name or "").strip()) < 2:
+        return v
+
+    @field_validator("last_name")
+    @classmethod
+    def last_name_min_length(cls, v: str) -> str:
+        if len((v or "").strip()) < 2:
             raise ValueError("last_name must have at least 2 characters")
-        return self
+        return v
 
     def model_post_init(self, __context: Any) -> None:
         self.email = self.email.lower()
@@ -52,13 +58,19 @@ class UserUpdate(BaseModel):
 
     model_config = ConfigDict(str_strip_whitespace=True)
 
-    @model_validator(mode="after")
-    def check_names_length(self) -> "UserUpdate":
-        if self.first_name is not None and len(self.first_name.strip()) < 2:
+    @field_validator("first_name")
+    @classmethod
+    def first_name_min_length(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None and len(v.strip()) < 2:
             raise ValueError("first_name must have at least 2 characters")
-        if self.last_name is not None and len(self.last_name.strip()) < 2:
+        return v
+
+    @field_validator("last_name")
+    @classmethod
+    def last_name_min_length(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None and len(v.strip()) < 2:
             raise ValueError("last_name must have at least 2 characters")
-        return self
+        return v
 
     def model_post_init(self, __context: Any) -> None:
         if self.email is not None:
