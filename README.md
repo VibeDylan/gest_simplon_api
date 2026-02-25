@@ -91,6 +91,8 @@ cp .env.example .env
 | `DATABASE_URL`       | URL de connexion (base principale)   | `postgresql://postgres:postgres@localhost:5444/gestsimplon` |
 | `TEST_DATABASE_URL`  | URL de la base de test (pour pytest)| `postgresql://postgres:postgres@localhost:5444/gestsimplon_test` |
 | `ENV`                | Environnement (optionnel)           | `dev` (défaut) |
+| `SECRET_KEY`                | JWT Token Secret Key        |  |
+
 
 - Le port **5444** correspond au mapping Docker (`5444:5432`). Si Postgres est en local sur 5432, adapter les URLs.
 - Pour exécuter les tests, définir `TEST_DATABASE_URL` sur une base dédiée (ex. `gestsimplon_test`). Les tests activent automatiquement cette base via la variable interne `USE_TEST_DB`.
