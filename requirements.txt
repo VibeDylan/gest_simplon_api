@@ -10,3 +10,4 @@ alembic
 pytest
 pytest-cov
 bcrypt
+python-jose[cryptography]

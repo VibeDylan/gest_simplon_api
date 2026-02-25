@@ -153,6 +153,14 @@ class GroupNotFound(AppError):
     def __init__(self, message: str = "Group not found."):
         super().__init__(code=self.code, message=message)
 
+class InvalidCredentials(AppError):
+    """Levée lorsque les identifiants de connexion sont invalides."""
+
+    code = "INVALID_CREDENTIALS"
+
+    def __init__(self, message: str = "Invalid credentials."):
+        super().__init__(code=self.code, message=message)
+
 
 __all__ = [
     "AppError",
@@ -170,4 +178,5 @@ __all__ = [
     "EnrollmentSessionFull",
     "BriefNotFound",
     "GroupNotFound",
+    "InvalidCredentials",
 ]
