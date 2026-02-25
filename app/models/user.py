@@ -22,6 +22,16 @@ def _enrollment_cls():
     return Enrollment
 
 
+def _brief_student_cls():
+    from app.models.brief_student import BriefStudent
+    return BriefStudent
+
+
+def _group_member_cls():
+    from app.models.group import GroupMember
+    return GroupMember
+
+
 class User(SQLModel, table=True):
     """
     Utilisateur : admin, formateur ou apprenant.
@@ -52,3 +62,5 @@ class User(SQLModel, table=True):
 
     taught_sessions: _session_cls = Relationship(back_populates="teacher")
     enrollments: _enrollment_cls = Relationship(back_populates="student")
+    brief_links: _brief_student_cls = Relationship(back_populates="student")
+    group_memberships: _group_member_cls = Relationship(back_populates="student")

@@ -11,8 +11,10 @@ from app.utils.enum import SessionStatus
 from sqlmodel import SQLModel, Field, Relationship
 
 if TYPE_CHECKING:
+    from app.models.brief import Brief
     from app.models.enrollment import Enrollment
     from app.models.formation import Formation
+    from app.models.group import Group
     from app.models.user import User
 
 
@@ -61,3 +63,5 @@ class Session(SQLModel, table=True):
     formation: _formation_cls = Relationship(back_populates="sessions")
     teacher: _user_cls = Relationship(back_populates="taught_sessions")
     enrollments: _enrollment_cls = Relationship(back_populates="session")
+    briefs: List["Brief"] = Relationship(back_populates="session")
+    groups: List["Group"] = Relationship(back_populates="session")

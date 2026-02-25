@@ -11,11 +11,13 @@ from fastapi.responses import JSONResponse
 from app.api.v1.router import api_router
 from app.core.errors import (
     AppError,
+    BriefNotFound,
     EmailAlreadyUsed,
     EnrollmentAlreadyExists,
     EnrollmentSessionFull,
     FormationNotFound,
     FormationTitleAlreadyUsed,
+    GroupNotFound,
     SessionEndDateAlreadyExists,
     SessionNotFound,
     SessionStartDateAfterEndDate,
@@ -101,7 +103,18 @@ def validation_exception_handler(request: Request, exc: RequestValidationError) 
 def app_error_handler(request: Request, exc: AppError) -> JSONResponse:
     """Transforme les exceptions métier en JSON { code, message } avec le bon status HTTP."""
     status_code = 500
-    if isinstance(exc, (UserNotFound, FormationNotFound, TeacherNotFound, SessionNotFound, EnrollmentNotFound)):
+    if isinstance(
+        exc,
+        (
+            UserNotFound,
+            FormationNotFound,
+            TeacherNotFound,
+            SessionNotFound,
+            EnrollmentNotFound,
+            BriefNotFound,
+            GroupNotFound,
+        ),
+    ):
         status_code = 404
     elif isinstance(exc, (EmailAlreadyUsed, FormationTitleAlreadyUsed, EnrollmentAlreadyExists)):
         status_code = 409
