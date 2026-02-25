@@ -135,6 +135,25 @@ class EnrollmentSessionFull(AppError):
     def __init__(self, message: str = "This session is full."):
         super().__init__(code=self.code, message=message)
 
+
+class BriefNotFound(AppError):
+    """Levée lorsqu'aucun brief ne correspond à l'id demandé."""
+
+    code = "BRIEF_NOT_FOUND"
+
+    def __init__(self, message: str = "Brief not found."):
+        super().__init__(code=self.code, message=message)
+
+
+class GroupNotFound(AppError):
+    """Levée lorsqu'aucun groupe ne correspond à l'id demandé."""
+
+    code = "GROUP_NOT_FOUND"
+
+    def __init__(self, message: str = "Group not found."):
+        super().__init__(code=self.code, message=message)
+
+
 __all__ = [
     "AppError",
     "UserNotFound",
@@ -149,4 +168,6 @@ __all__ = [
     "EnrollmentNotFound",
     "EnrollmentAlreadyExists",
     "EnrollmentSessionFull",
+    "BriefNotFound",
+    "GroupNotFound",
 ]
