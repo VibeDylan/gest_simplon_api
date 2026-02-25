@@ -44,6 +44,9 @@ class User(SQLModel, table=True):
         role: Rôle (admin, trainer, learner).
         taught_sessions: Sessions dont il est formateur.
         enrollments: Inscriptions en tant qu'apprenant.
+        brief_links: Briefs assignés à l'étudiant.
+        group_memberships: Groupes auxquels l'étudiant appartient.
+        must_change_password: Indique si l'étudiant doit changer son mot de passe.
     """
 
     __tablename__ = "users"
@@ -64,3 +67,4 @@ class User(SQLModel, table=True):
     enrollments: _enrollment_cls = Relationship(back_populates="student")
     brief_links: _brief_student_cls = Relationship(back_populates="student")
     group_memberships: _group_member_cls = Relationship(back_populates="student")
+    must_change_password: bool = Field(default=True)
