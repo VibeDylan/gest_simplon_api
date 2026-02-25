@@ -19,6 +19,9 @@ class Settings(BaseSettings):
     """
 
     database_url: str = Field(..., env="DATABASE_URL")
+    secret_key: str = Field(..., env="SECRET_KEY")
+    algorithm: str = "HS256"
+    access_token_expire_minutes: int = 30
     test_database_url: str | None = Field(default=None, env="TEST_DATABASE_URL")
     env: str = Field(default="dev", env="ENV")
 
