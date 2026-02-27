@@ -162,6 +162,42 @@ class InvalidCredentials(AppError):
         super().__init__(code=self.code, message=message)
 
 
+class SignatureNotFound(AppError):
+    """Levée lorsqu'aucune signature ne correspond à l'id demandé."""
+
+    code = "SIGNATURE_NOT_FOUND"
+
+    def __init__(self, message: str = "Signature not found."):
+        super().__init__(code=self.code, message=message)
+
+
+class SignatureAlreadyExistsForDate(AppError):
+    """Levée si l'apprenant a déjà signé pour ce jour dans cette session."""
+
+    code = "SIGNATURE_ALREADY_EXISTS_FOR_DATE"
+
+    def __init__(self, message: str = "Signature already exists for this session and date."):
+        super().__init__(code=self.code, message=message)
+
+
+class SignatureDateOutsideSession(AppError):
+    """Levée si la date d'émargement est en dehors de la période de la session."""
+
+    code = "SIGNATURE_DATE_OUTSIDE_SESSION"
+
+    def __init__(self, message: str = "Signature date is outside session period."):
+        super().__init__(code=self.code, message=message)
+
+
+class UserNotEnrolledInSession(AppError):
+    """Levée si l'utilisateur n'est pas inscrit à la session (réservé aux apprenants inscrits)."""
+
+    code = "USER_NOT_ENROLLED_IN_SESSION"
+
+    def __init__(self, message: str = "User is not enrolled in this session."):
+        super().__init__(code=self.code, message=message)
+
+
 __all__ = [
     "AppError",
     "UserNotFound",
@@ -179,4 +215,8 @@ __all__ = [
     "BriefNotFound",
     "GroupNotFound",
     "InvalidCredentials",
+    "SignatureNotFound",
+    "SignatureAlreadyExistsForDate",
+    "SignatureDateOutsideSession",
+    "UserNotEnrolledInSession",
 ]

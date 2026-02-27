@@ -23,8 +23,12 @@ from app.core.errors import (
     SessionNotFound,
     SessionStartDateAfterEndDate,
     SessionStartDateAlreadyExists,
+    SignatureAlreadyExistsForDate,
+    SignatureDateOutsideSession,
+    SignatureNotFound,
     TeacherNotFound,
     UserNotFound,
+    UserNotEnrolledInSession,
     UserNotTrainer,
     EnrollmentNotFound,
 )
@@ -114,10 +118,14 @@ def app_error_handler(request: Request, exc: AppError) -> JSONResponse:
             EnrollmentNotFound,
             BriefNotFound,
             GroupNotFound,
+            SignatureNotFound,
         ),
     ):
         status_code = 404
-    elif isinstance(exc, (EmailAlreadyUsed, FormationTitleAlreadyUsed, EnrollmentAlreadyExists)):
+    elif isinstance(
+        exc,
+        (EmailAlreadyUsed, FormationTitleAlreadyUsed, EnrollmentAlreadyExists, SignatureAlreadyExistsForDate),
+    ):
         status_code = 409
     elif isinstance(exc, InvalidCredentials):
         status_code = 401
@@ -129,6 +137,8 @@ def app_error_handler(request: Request, exc: AppError) -> JSONResponse:
             SessionEndDateAlreadyExists,
             UserNotTrainer,
             EnrollmentSessionFull,
+            SignatureDateOutsideSession,
+            UserNotEnrolledInSession,
         ),
     ):
         status_code = 400
