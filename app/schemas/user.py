@@ -7,7 +7,7 @@ Les emails sont normalisés en minuscules à la validation.
 from datetime import datetime
 from typing import Any, Optional
 
-from pydantic import BaseModel, ConfigDict, EmailStr, model_validator, field_validator
+from pydantic import BaseModel, ConfigDict, EmailStr, field_validator
 
 from app.utils.enum import Role
 
@@ -64,6 +64,7 @@ class UserUpdate(BaseModel):
     last_name: Optional[str] = None
     password: Optional[str] = None
     role: Optional[Role] = None
+    must_change_password: Optional[bool] = None
 
     model_config = ConfigDict(str_strip_whitespace=True)
 

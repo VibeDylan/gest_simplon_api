@@ -18,6 +18,7 @@ from app.core.errors import (
     FormationNotFound,
     FormationTitleAlreadyUsed,
     GroupNotFound,
+    InvalidCredentials,
     SessionEndDateAlreadyExists,
     SessionNotFound,
     SessionStartDateAfterEndDate,
@@ -118,6 +119,8 @@ def app_error_handler(request: Request, exc: AppError) -> JSONResponse:
         status_code = 404
     elif isinstance(exc, (EmailAlreadyUsed, FormationTitleAlreadyUsed, EnrollmentAlreadyExists)):
         status_code = 409
+    elif isinstance(exc, InvalidCredentials):
+        status_code = 401
     elif isinstance(
         exc,
         (
