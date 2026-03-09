@@ -84,3 +84,11 @@ class SignatureService:
         if self.session_repo.get_by_id(session_id) is None:
             raise SessionNotFound()
         return self.signature_repo.list_by_session_and_user(session_id, user_id)
+
+    def list_by_session_and_date_range(
+        self, session_id: int, start_date: date, end_date: date
+    ) -> List[Signature]:
+        """Liste les signatures pour une session et une période (dates signées)."""
+        if self.session_repo.get_by_id(session_id) is None:
+            raise SessionNotFound()
+        return self.signature_repo.list_by_session_and_date_range(session_id, start_date, end_date)
