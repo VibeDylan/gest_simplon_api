@@ -4,7 +4,7 @@ Schémas Pydantic pour l'entité Enrollment (inscription).
 DTOs de validation entrée (création, mise à jour) et sortie (lecture).
 """
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict
 
@@ -45,3 +45,4 @@ class EnrollmentUpdate(BaseModel):
     student_id: Optional[int] = None
 
     model_config = ConfigDict(str_strip_whitespace=True)
+
